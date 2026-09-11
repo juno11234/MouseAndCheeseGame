@@ -109,6 +109,24 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""4dfb174d-7a22-4d73-ba29-f4a76bf77be2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AutoTest"",
+                    ""type"": ""Button"",
+                    ""id"": ""6a4de2b9-2608-4be9-ad2f-8f277cbeabf6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -177,6 +195,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc6bf0cf-85bb-4699-bdd0-98abe9a1a05e"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2904e9d0-e4eb-4c9f-a133-5189da3bc3a4"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AutoTest"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -187,6 +227,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_PlayerActions = asset.FindActionMap("PlayerActions", throwIfNotFound: true);
         m_PlayerActions_Move = m_PlayerActions.FindAction("Move", throwIfNotFound: true);
         m_PlayerActions_Look = m_PlayerActions.FindAction("Look", throwIfNotFound: true);
+        m_PlayerActions_Jump = m_PlayerActions.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerActions_AutoTest = m_PlayerActions.FindAction("AutoTest", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -269,6 +311,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private List<IPlayerActionsActions> m_PlayerActionsActionsCallbackInterfaces = new List<IPlayerActionsActions>();
     private readonly InputAction m_PlayerActions_Move;
     private readonly InputAction m_PlayerActions_Look;
+    private readonly InputAction m_PlayerActions_Jump;
+    private readonly InputAction m_PlayerActions_AutoTest;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerActions".
     /// </summary>
@@ -288,6 +332,14 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerActions/Look".
         /// </summary>
         public InputAction @Look => m_Wrapper.m_PlayerActions_Look;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActions/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_PlayerActions_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActions/AutoTest".
+        /// </summary>
+        public InputAction @AutoTest => m_Wrapper.m_PlayerActions_AutoTest;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -320,6 +372,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
+            @AutoTest.started += instance.OnAutoTest;
+            @AutoTest.performed += instance.OnAutoTest;
+            @AutoTest.canceled += instance.OnAutoTest;
         }
 
         /// <summary>
@@ -337,6 +395,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
+            @AutoTest.started -= instance.OnAutoTest;
+            @AutoTest.performed -= instance.OnAutoTest;
+            @AutoTest.canceled -= instance.OnAutoTest;
         }
 
         /// <summary>
@@ -391,5 +455,19 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AutoTest" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAutoTest(InputAction.CallbackContext context);
     }
 }

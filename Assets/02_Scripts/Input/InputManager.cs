@@ -6,8 +6,17 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class InputManager : MonoBehaviour
 {
+    public delegate void InputButtonHandler(bool isPressed);
+
     private PlayerInput _input;
     private PlayerInput.PlayerActionsActions _playerActions;
+
+    public event InputButtonHandler OnAutoInput;
+
+    /// <summary>
+    /// 점프(스페이스바) 입력 시 발생하는 이벤트
+    /// </summary>
+    public event InputButtonHandler OnJumpInput;
 
     /// <summary>
     /// WASD 입력으로부터 얻은 원본 이동 입력 벡터 (X: 좌우 A/D, Y: 전후 W/S)
@@ -37,6 +46,15 @@ public class InputManager : MonoBehaviour
     private void MoveCanceled(InputAction.CallbackContext context)
         => MoveInput = Vector2.zero;
 
+    private void QPerformed(InputAction.CallbackContext context)
+        => OnAutoInput?.Invoke(true);
+
+    /// <summary>
+    /// Jump 액션이 수행될 때 OnJumpInput 이벤트를 발생시킨다
+    /// </summary>
+    private void JumpPerformed(InputAction.CallbackContext context)
+        => OnJumpInput?.Invoke(true);
+
     #endregion
 
     /// <summary>
@@ -48,6 +66,9 @@ public class InputManager : MonoBehaviour
 
         _playerActions.Move.performed += MovePerformed;
         _playerActions.Move.canceled += MoveCanceled;
+
+        _playerActions.AutoTest.performed += QPerformed;
+        _playerActions.Jump.performed += JumpPerformed;
     }
 
     /// <summary>
@@ -59,5 +80,8 @@ public class InputManager : MonoBehaviour
 
         _playerActions.Move.performed -= MovePerformed;
         _playerActions.Move.canceled -= MoveCanceled;
+
+        _playerActions.AutoTest.performed -= QPerformed;
+        _playerActions.Jump.performed -= JumpPerformed;
     }
 }
