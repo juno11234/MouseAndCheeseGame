@@ -9,14 +9,15 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private InputManager _inputManager;
     [SerializeField] private CameraController _cameraController;
+    [SerializeField] private HungerController _hungerController;
     [SerializeField] private Transform _visualTransform;
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _rotationSpeed = 720f;
     [SerializeField] private float _jumpForce = 8f;
     [SerializeField] private int _maxJumpCount = 2;
     [SerializeField] private float groundCheckRadius = 0.3f;
     [SerializeField] private float groundCheckDistance = 0.2f;
     [SerializeField] private LayerMask _groundLayer;
+    
+    private float _rotationSpeed = 720f;
     private float _gravity = -9.81f;
     private Vector3 _velocity;
     private CharacterController _characterController;
@@ -98,11 +99,12 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// 주어진 방향으로 CharacterController를 이용해 이동시킨다
+    /// 주어진 방향으로 CharacterController를 이용해 이동시킨다. 이동 속도는 HungerController가 배고픔 비율로부터
+    /// 계산한 값을 그대로 사용한다 (배고픔이 낮을수록 느려지고, 0이어도 최저 속도로 계속 이동한다)
     /// </summary>
     private void HandleMovement(Vector3 moveDirection)
     {
-        _characterController.Move(moveDirection * (_moveSpeed * Time.deltaTime));
+        _characterController.Move(moveDirection * (_hungerController.CurrentMoveSpeed * Time.deltaTime));
     }
 
     /// <summary>
