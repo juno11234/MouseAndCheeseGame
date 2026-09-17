@@ -2015,7 +2015,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -2033,7 +2033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a51f776ec6351149a27e2c6db078fc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Food
-  _amount: -40
+  _amount: -10
   _type: 0
 --- !u!4 &1646811945
 Transform:
@@ -2044,7 +2044,7 @@ Transform:
   m_GameObject: {fileID: 1646811942}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.842, y: 0.066, z: 2.14752}
+  m_LocalPosition: {x: -3.019, y: 0.066, z: 2.14752}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
