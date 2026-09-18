@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0835442ad71f924d9bc4cdd5d7124f0, type: 3}
+  m_Name: LeafFlightData
+  m_EditorClassIdentifier: Assembly-CSharp::LeafFlightData
+  _flightDuration: 5
+  _ascendSpeed: 3
+  _cooldownDuration: 15

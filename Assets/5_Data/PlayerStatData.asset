@@ -15,7 +15,7 @@ MonoBehaviour:
   _maxHunger: 50
   _hungerDecayPerSecond: 2
   _minMoveSpeed: 2
-  _maxMoveSpeed: 8
+  _maxMoveSpeed: 10
   _hungerToSpeedCurve:
     serializedVersion: 2
     m_Curve:
