@@ -20,10 +20,10 @@ public class Player : MonoBehaviour
 
     public delegate void MoveStateChangedHandler(PlayerMoveState newState);
 
-     
+
     [SerializeField] private LeafFlightData _leafFlightData;
     [SerializeField] private GameObject _leaf;
-    
+
     [SerializeField] private float _jumpForce = 8f;
     [SerializeField] private int _maxJumpCount = 2;
     [SerializeField] private float groundCheckRadius = 0.3f;
@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
     private HungerController _hungerController;
     private Animator _animator;
     private CameraController _cameraController;
-    
+
     private Transform _visualTransform;
     private float _rotationSpeed = 720f;
     private float _gravity = -9.81f;
@@ -235,6 +235,7 @@ public class Player : MonoBehaviour
             _animator.SetBool(Fly, false);
             _leaf.SetActive(false);
         }
+
         OnMoveStateChanged?.Invoke(newState);
     }
 }

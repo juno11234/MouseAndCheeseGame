@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7582bde05a4ca80439a72a2f0d718652, type: 3}
+  m_Name: CatStatData
+  m_EditorClassIdentifier: Assembly-CSharp::CatStatData
+  _moveSpeed: 4
+  _waypointArrivalTolerance: 1
+  _directChaseDistance: 10
+  _maxGap: 15
+  _rubberBandSpeed: 8
+  _gapCorrectionSpeed: 10
+  _gapCorrectionTolerance: 0.1
+  _initialGap: 5
