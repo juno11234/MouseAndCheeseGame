@@ -14,26 +14,26 @@ public enum CatState
 }
 
 /// <summary>
-/// 기록된 경로를 NavMeshAgent로 따라가며 플레이어를 추격하고, 갭·러버밴딩·풀잎 비행 갭 중립화·게임오버 트리거를 처리한다. Cat GameObject에 부착한다
+/// 기록된 경로를 NavMeshAgent로 따라가며 플레이어를 추격하고, 직선거리 갭·러버밴딩·풀잎 비행 갭 중립화·충돌 포획을 처리한다. Cat GameObject에 부착한다
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 public class CatController : MonoBehaviour
 {
+    private static readonly int RunHash = Animator.StringToHash("Run");
+
     public delegate void GapChangedHandler(float gap);
 
-    public delegate void GapDepletedHandler();
+    public delegate void PlayerCaughtHandler();
 
     [SerializeField] private Player _player;
     [SerializeField] private PlayerPathRecorder _pathRecorder;
     [SerializeField] private CatStatData _catStatData;
 
     private NavMeshAgent _agent;
+    private Animator _animator;
     private CatState _state = CatState.Chasing;
     private Vector3? _currentTarget;
-    private Vector3 _lastPosition;
-    private float _catTraveledDistance;
     private float _gapSnapshotAtFlightStart;
-    private bool _hasGapDepleted;
 
     /// <summary>
     /// 갭이 갱신될 때마다 발생하는 이벤트
@@ -41,29 +41,32 @@ public class CatController : MonoBehaviour
     public event GapChangedHandler OnGapChanged;
 
     /// <summary>
-    /// 갭이 0 이하가 되면 한 번 발생하는 이벤트(게임오버 트리거)
+    /// 고양이가 플레이어와 충돌해 포획하면 한 번 발생하는 이벤트(게임오버 트리거)
     /// </summary>
-    public event GapDepletedHandler OnGapDepleted;
+    public event PlayerCaughtHandler OnPlayerCaught;
 
     /// <summary>
-    /// 플레이어와 고양이 사이의 경로상 거리(플레이어 누적 이동 거리 - 고양이 누적 이동 거리)
+    /// 고양이와 플레이어 사이의 직선거리
     /// </summary>
-    public float Gap => _pathRecorder.TotalPathDistance - _catTraveledDistance;
+    public float Gap => Vector3.Distance(transform.position, _player.transform.position);
 
     /// <summary>
-    /// 플레이어와의 직선거리
+    /// 고양이와 플레이어 사이의 직선거리가 distance 이하인지 제곱 거리로 비교한다
     /// </summary>
-    private float DistanceToPlayer => Vector3.Distance(transform.position, _player.transform.position);
+    private bool IsWithinGap(float distance)
+    {
+        Vector3 offset = transform.position - _player.transform.position;
+        return offset.sqrMagnitude <= distance * distance;
+    }
 
     /// <summary>
-    /// NavMeshAgent를 설정하고 초기 갭을 반영한다
+    /// NavMeshAgent와 Animator를 가져와 설정한다
     /// </summary>
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _animator = GetComponentInChildren<Animator>();
         _agent.autoBraking = false;
-        _lastPosition = transform.position;
-        _catTraveledDistance = -_catStatData.InitialGap;
     }
 
     /// <summary>
@@ -83,11 +86,10 @@ public class CatController : MonoBehaviour
     }
 
     /// <summary>
-    /// 누적 이동 거리를 갱신하고 상태별 추격 동작을 수행하며, 갭이 0 이하가 되면 Caught로 전환하고 OnGapDepleted를 발생시킨다
+    /// 상태별 추격 동작을 수행하고 갭 갱신 이벤트를 발생시킨다
     /// </summary>
     private void Update()
     {
-        TrackTraveledDistance();
         Debug.Log(_state);
         switch (_state)
         {
@@ -96,7 +98,7 @@ public class CatController : MonoBehaviour
                 return;
             case CatState.Chasing:
                 FollowRecordedPath(ResolveChasingSpeed());
-                if (DistanceToPlayer <= _catStatData.DirectChaseDistance)
+                if (IsWithinGap(_catStatData.DirectChaseDistance))
                 {
                     SetState(CatState.DirectChasing);
                 }
@@ -104,7 +106,7 @@ public class CatController : MonoBehaviour
                 break;
             case CatState.DirectChasing:
                 ChasePlayerDirectly();
-                if (DistanceToPlayer > _catStatData.DirectChaseDistance)
+                if (IsWithinGap(_catStatData.DirectChaseDistance) == false)
                 {
                     SetState(CatState.Chasing);
                 }
@@ -112,7 +114,8 @@ public class CatController : MonoBehaviour
                 break;
             case CatState.GapCorrecting:
                 FollowRecordedPath(_catStatData.GapCorrectionSpeed);
-                if (Mathf.Abs(Gap - _gapSnapshotAtFlightStart) <= _catStatData.GapCorrectionTolerance)
+                // 갭은 스냅샷 위에서 아래로만 줄어들므로 단방향 비교로 프레임 간 감소량이 커도 허용 구간을 건너뛰지 않는다
+                if (IsWithinGap(_gapSnapshotAtFlightStart + _catStatData.GapCorrectionTolerance))
                 {
                     SetState(CatState.Chasing);
                 }
@@ -121,30 +124,32 @@ public class CatController : MonoBehaviour
         }
 
         OnGapChanged?.Invoke(Gap);
+    }
 
-        if (Gap <= 0f && _hasGapDepleted == false)
+    /// <summary>
+    /// 플레이어와 충돌하면 Caught로 전환하고 OnPlayerCaught를 발생시킨다. Frozen·Caught 상태에서는 무시한다
+    /// </summary>
+    private void OnTriggerEnter(Collider other)
+    {
+        if (_state == CatState.Frozen || _state == CatState.Caught)
         {
-            _hasGapDepleted = true;
+            return;
+        }
+
+        if (other.TryGetComponent(out Player _))
+        {
             SetState(CatState.Caught);
-            OnGapDepleted?.Invoke();
+            _animator.SetBool(RunHash, false);
+            OnPlayerCaught?.Invoke();
         }
     }
 
     /// <summary>
-    /// 이번 프레임에 실제로 이동한 거리를 고양이 누적 이동 거리에 더한다
-    /// </summary>
-    private void TrackTraveledDistance()
-    {
-        _catTraveledDistance += Vector3.Distance(transform.position, _lastPosition);
-        _lastPosition = transform.position;
-    }
-
-    /// <summary>
-    /// 갭이 MaxGap을 넘으면 러버밴딩 속도, 아니면 기본 속도를 반환한다
+    /// 갭이 MaxGap 이하면 기본 속도, 넘으면 러버밴딩 속도를 반환한다
     /// </summary>
     private float ResolveChasingSpeed()
     {
-        return Gap > _catStatData.MaxGap ? _catStatData.RubberBandSpeed : _catStatData.MoveSpeed;
+        return IsWithinGap(_catStatData.MaxGap) ? _catStatData.MoveSpeed : _catStatData.RubberBandSpeed;
     }
 
     /// <summary>
@@ -183,7 +188,7 @@ public class CatController : MonoBehaviour
     }
 
     /// <summary>
-    /// 상태를 바꾸고 NavMeshAgent 정지 여부를 맞춘다. 직접 추격 상태를 떠날 때는 큐와 현재 목표를 비워, 이후에는 상태가 바뀐 뒤 기록된 경로만 따르게 한다
+    /// 상태를 바꾸고 NavMeshAgent 정지 여부와 Animator Run(Frozen에서만 false)을 맞춘다. 직접 추격 상태를 떠날 때는 큐와 현재 목표를 비운다
     /// </summary>
     private void SetState(CatState newState)
     {
@@ -201,6 +206,8 @@ public class CatController : MonoBehaviour
         {
             _agent.velocity = Vector3.zero;
         }
+
+        _animator.SetBool(RunHash, newState != CatState.Frozen);
     }
 
     /// <summary>

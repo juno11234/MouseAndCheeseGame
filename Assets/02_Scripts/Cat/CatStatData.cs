@@ -21,9 +21,6 @@ public class CatStatData : ScriptableObject
     [SerializeField] private float _gapCorrectionSpeed = 10f;
     [SerializeField] private float _gapCorrectionTolerance = 0.1f;
 
-    [Header("초기 상태")]
-    [SerializeField] private float _initialGap = 5f;
-
     /// <summary>
     /// 평상시 및 직접 추격 중 이동 속도
     /// </summary>
@@ -55,12 +52,7 @@ public class CatStatData : ScriptableObject
     public float GapCorrectionSpeed => _gapCorrectionSpeed;
 
     /// <summary>
-    /// 갭 보정 완료로 간주할 허용 오차
+    /// 갭 보정 완료로 간주할 허용 오차(갭이 비행 전 갭 + 이 값 이하가 되면 완료)
     /// </summary>
     public float GapCorrectionTolerance => _gapCorrectionTolerance;
-
-    /// <summary>
-    /// 게임 시작 시점의 초기 갭
-    /// </summary>
-    public float InitialGap => _initialGap;
 }
