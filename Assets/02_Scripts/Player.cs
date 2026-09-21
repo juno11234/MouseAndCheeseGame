@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -17,9 +18,6 @@ public enum PlayerMoveState
 public class Player : MonoBehaviour
 {
     private static readonly int Fly = Animator.StringToHash("Fly");
-
-    public delegate void MoveStateChangedHandler(PlayerMoveState newState);
-
 
     [SerializeField] private LeafFlightData _leafFlightData;
     [SerializeField] private GameObject _leaf;
@@ -50,7 +48,7 @@ public class Player : MonoBehaviour
     /// 이동 상태(Run/Fly)가 바뀔 때 발생하는 이벤트. 아직 구현되지 않은 고양이 AI("플레이어 추격")가
     /// Fly로 바뀌면 갭을 기록하고 제자리에서 대기, Run으로 돌아오면 속도 보정을 시작하는 데 사용할 훅이다.
     /// </summary>
-    public event MoveStateChangedHandler OnMoveStateChanged;
+    public event Action<PlayerMoveState> OnMoveStateChanged;
 
     private void Awake()
     {
@@ -197,25 +195,11 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// 풀잎(LeafFlightTrigger)과 접촉했을 때, Run 상태이고 그 풀잎이 사용 가능한 상태(IsAvailable)라면
-    /// 비행을 시작한다. HungerController의 OnTriggerEnter와는 서로 독립적으로 동작한다(형제 컴포넌트 패턴과
-    /// 동일하게, 이번엔 Player 자신이 직접 받는 차이만 있음)
-    /// </summary>
-    private void OnTriggerEnter(Collider other)
-    {
-        if (_moveState == PlayerMoveState.Run && other.TryGetComponent(out LeafFlightTrigger leaf) && leaf.IsAvailable)
-        {
-            StartFlight(leaf);
-        }
-    }
-
-    /// <summary>
     /// 비행 제한 시간을 초기화하고 Fly 상태로 전환한다. 사용한 풀잎을 즉시 쿨타임 상태로 전환시킨다
     /// </summary>
-    private void StartFlight(LeafFlightTrigger leaf)
+    public void StartFlight()
     {
         _flightTimeRemaining = _leafFlightData.FlightDuration;
-        leaf.StartCooldown();
         SetMoveState(PlayerMoveState.Fly);
     }
 

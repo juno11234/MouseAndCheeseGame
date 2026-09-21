@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,10 +22,6 @@ public class CatController : MonoBehaviour
 {
     private static readonly int RunHash = Animator.StringToHash("Run");
 
-    public delegate void GapChangedHandler(float gap);
-
-    public delegate void PlayerCaughtHandler();
-
     [SerializeField] private Player _player;
     [SerializeField] private PlayerPathRecorder _pathRecorder;
     [SerializeField] private CatStatData _catStatData;
@@ -38,12 +35,11 @@ public class CatController : MonoBehaviour
     /// <summary>
     /// 갭이 갱신될 때마다 발생하는 이벤트
     /// </summary>
-    public event GapChangedHandler OnGapChanged;
-
+    public event Action<float> OnGapChanged;
     /// <summary>
     /// 고양이가 플레이어와 충돌해 포획하면 한 번 발생하는 이벤트(게임오버 트리거)
     /// </summary>
-    public event PlayerCaughtHandler OnPlayerCaught;
+    public event Action OnPlayerCaught;
 
     /// <summary>
     /// 고양이와 플레이어 사이의 직선거리
@@ -90,7 +86,6 @@ public class CatController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        Debug.Log(_state);
         switch (_state)
         {
             case CatState.Frozen:
@@ -163,7 +158,6 @@ public class CatController : MonoBehaviour
         {
             _currentTarget = next;
             _agent.SetDestination(next);
-            Debug.Log($"[Cat] 경로점 목표 지정: {next}");
         }
 
         if (_currentTarget.HasValue == false)
@@ -184,7 +178,6 @@ public class CatController : MonoBehaviour
     {
         _agent.speed = _catStatData.MoveSpeed;
         _agent.SetDestination(_player.transform.position);
-        Debug.Log($"[Cat] 플레이어 직접 추격 목표 지정: {_player.transform.position}");
     }
 
     /// <summary>

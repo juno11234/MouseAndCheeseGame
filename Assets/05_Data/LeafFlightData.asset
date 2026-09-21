@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0835442ad71f924d9bc4cdd5d7124f0, type: 3}
   m_Name: LeafFlightData
   m_EditorClassIdentifier: Assembly-CSharp::LeafFlightData
-  _flightDuration: 5
+  _flightDuration: 4
   _ascendSpeed: 3
-  _cooldownDuration: 15
+  _cooldownDuration: 60

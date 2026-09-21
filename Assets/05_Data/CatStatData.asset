@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7582bde05a4ca80439a72a2f0d718652, type: 3}
   m_Name: CatStatData
   m_EditorClassIdentifier: Assembly-CSharp::CatStatData
-  _moveSpeed: 4
+  _moveSpeed: 6
   _waypointArrivalTolerance: 1
-  _directChaseDistance: 6
+  _directChaseDistance: 7
   _maxGap: 15
   _rubberBandSpeed: 8
   _gapCorrectionSpeed: 15
   _gapCorrectionTolerance: 0.1
-  _initialGap: 5

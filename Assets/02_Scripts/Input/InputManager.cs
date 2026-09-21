@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,17 +7,15 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class InputManager : MonoBehaviour
 {
-    public delegate void InputButtonHandler(bool isPressed);
-
     private PlayerInput _input;
     private PlayerInput.PlayerActionsActions _playerActions;
 
-    public event InputButtonHandler OnAutoInput;
+    public event Action<bool> OnAutoInput;
 
     /// <summary>
     /// 점프(스페이스바) 입력 시 발생하는 이벤트
     /// </summary>
-    public event InputButtonHandler OnJumpInput;
+    public event Action<bool> OnJumpInput;
 
     /// <summary>
     /// WASD 입력으로부터 얻은 원본 이동 입력 벡터 (X: 좌우 A/D, Y: 전후 W/S)

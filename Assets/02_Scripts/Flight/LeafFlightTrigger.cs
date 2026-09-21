@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -36,10 +38,19 @@ public class LeafFlightTrigger : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent(out Player player) && IsAvailable)
+        {
+            StartCooldown();
+            player.StartFlight();
+        }
+    }
+
     /// <summary>
     /// Player가 이 풀잎으로 비행을 시작시킬 때 호출해, 이 풀잎을 쿨타임 상태로 전환한다
     /// </summary>
-    public void StartCooldown()
+    private void StartCooldown()
     {
         _leaf.SetActive(false);
         _cooldownTimeRemaining = _leafFlightData.CooldownDuration;
