@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
     private float _rotationSpeed = 720f;
     private float _gravity = -9.81f;
     private Vector3 _velocity;
-    private bool _autoMove = false;
+    private bool _autoMove = true;
     private int _jumpCount;
     private bool _sphereHit;
     private PlayerMoveState _moveState = PlayerMoveState.Run;
@@ -96,6 +96,9 @@ public class Player : MonoBehaviour
         HandleRotation(moveDirection);
     }
 
+    /// <summary>
+    /// 에디터 디버깅용 Q 입력으로 자동 전진과 수동(W) 이동을 전환한다
+    /// </summary>
     private void ToggleAutoMove(bool isPressed)
     {
         _autoMove = !_autoMove;

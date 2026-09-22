@@ -10,6 +10,9 @@ public class InputManager : MonoBehaviour
     private PlayerInput _input;
     private PlayerInput.PlayerActionsActions _playerActions;
 
+    /// <summary>
+    /// Q 입력 시 발생하는 디버깅용 이벤트. 에디터에서만 발생하고 빌드에서는 발생하지 않는다
+    /// </summary>
     public event Action<bool> OnAutoInput;
 
     /// <summary>
@@ -45,8 +48,13 @@ public class InputManager : MonoBehaviour
     private void MoveCanceled(InputAction.CallbackContext context)
         => MoveInput = Vector2.zero;
 
+#if UNITY_EDITOR
+    /// <summary>
+    /// AutoTest(Q) 액션이 수행될 때 OnAutoInput 이벤트를 발생시킨다
+    /// </summary>
     private void QPerformed(InputAction.CallbackContext context)
         => OnAutoInput?.Invoke(true);
+#endif
 
     /// <summary>
     /// Jump 액션이 수행될 때 OnJumpInput 이벤트를 발생시킨다
@@ -66,7 +74,9 @@ public class InputManager : MonoBehaviour
         _playerActions.Move.performed += MovePerformed;
         _playerActions.Move.canceled += MoveCanceled;
 
+#if UNITY_EDITOR
         _playerActions.AutoTest.performed += QPerformed;
+#endif
         _playerActions.Jump.performed += JumpPerformed;
     }
 
@@ -80,7 +90,9 @@ public class InputManager : MonoBehaviour
         _playerActions.Move.performed -= MovePerformed;
         _playerActions.Move.canceled -= MoveCanceled;
 
+#if UNITY_EDITOR
         _playerActions.AutoTest.performed -= QPerformed;
+#endif
         _playerActions.Jump.performed -= JumpPerformed;
     }
 }

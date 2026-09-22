@@ -28,20 +28,10 @@ public class ObjectSpawner : MonoBehaviour
     /// </summary>
     private sealed class ExpiringCheese
     {
-        /// <summary>
-        /// 만료를 추적하는 치즈
-        /// </summary>
         public Food Cheese;
-
-        /// <summary>
-        /// 치즈가 만료되는 Time.time 시각
-        /// </summary>
         public float ExpireTime;
     }
-
-    /// <summary>
-    /// 이미 생성된 오브젝트의 소비 이벤트를 구독한다
-    /// </summary>
+    
     private void OnEnable()
     {
         foreach (Food food in _activeFoods.Keys)
@@ -49,10 +39,7 @@ public class ObjectSpawner : MonoBehaviour
             food.OnConsumed += HandleFoodConsumed;
         }
     }
-
-    /// <summary>
-    /// 이미 생성된 오브젝트의 소비 이벤트 구독을 해제한다
-    /// </summary>
+    
     private void OnDisable()
     {
         foreach (Food food in _activeFoods.Keys)
@@ -80,10 +67,7 @@ public class ObjectSpawner : MonoBehaviour
             TrySpawnRandom();
         }
     }
-
-    /// <summary>
-    /// 만료된 치즈를 회수하고 생성 주기마다 생성을 시도한다
-    /// </summary>
+    
     private void Update()
     {
         ExpireCheeses();

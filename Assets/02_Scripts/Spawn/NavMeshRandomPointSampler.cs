@@ -23,44 +23,53 @@ public class NavMeshRandomPointSampler
         _spawnData = spawnData;
         _filter = new NavMeshQueryFilter { agentTypeID = agentTypeId, areaMask = areaMask };
 
-        NavMeshTriangulation triangulation = NavMesh.CalculateTriangulation();
-        _vertices = triangulation.vertices;
-        _indices = triangulation.indices;
+        NavMeshTriangulation triangulation = NavMesh.CalculateTriangulation(); // NavMesh를 삼각형 목록으로
+        _vertices = triangulation.vertices; // 모든 꼭짓점 좌표
+        _indices = triangulation.indices; // 3개씩 끊으면 삼각형 단위 별 좌표
 
         List<int> triangleFirstIndices = new List<int>();
         List<float> cumulativeWeights = new List<float>();
         float totalWeight = 0f;
-        int triangleCount = _indices.Length / 3;
+        int triangleCount = _indices.Length / 3; // 삼각형의 갯수
         for (int i = 0; i < triangleCount; i++)
         {
-            if ((areaMask & (1 << triangulation.areas[i])) == 0)
+            if ((areaMask & (1 << triangulation.areas[i])) == 0) // 허용된 영역인가 (비트 연산)
             {
                 continue;
             }
 
+            // i번째 삼각형의 꼭짓점
             Vector3 a = _vertices[_indices[i * 3]];
             Vector3 b = _vertices[_indices[i * 3 + 1]];
             Vector3 c = _vertices[_indices[i * 3 + 2]];
-            float centroidY = (a.y + b.y + c.y) / 3f;
-            if (IsHeightAllowed(centroidY) == false)
+
+            float centroidY = (a.y + b.y + c.y) / 3f; // 세 꼭짓점 높이의 평균
+            if (IsHeightAllowed(centroidY) == false) // 생성 제한 구역인지 판단
             {
                 continue;
             }
 
+            // 두변을 외적한 벡터 길이 = 평행사변형의 넓이, 삼각형이니 * 0.5f
             float area = Vector3.Cross(b - a, c - a).magnitude * 0.5f;
             if (area <= 0f)
             {
                 continue;
             }
 
-            float heightMultiplier = centroidY >= _spawnData.ElevatedHeight ? _spawnData.ElevatedWeightMultiplier : 1f;
+            float heightMultiplier;
+            if (centroidY >= _spawnData.ElevatedHeight) // 평균이 높이 기준보다 높다면 확률 조정
+            {
+                heightMultiplier = _spawnData.ElevatedWeightMultiplier;
+            }
+            else heightMultiplier = 1f;
+
             totalWeight += area * heightMultiplier;
-            triangleFirstIndices.Add(i * 3);
-            cumulativeWeights.Add(totalWeight);
+            triangleFirstIndices.Add(i * 3); // 이 삼각형이 몇번 부터인지
+            cumulativeWeights.Add(totalWeight); // 가중치 합계
         }
 
-        _triangleFirstIndices = triangleFirstIndices.ToArray();
-        _cumulativeWeights = cumulativeWeights.ToArray();
+        _triangleFirstIndices = triangleFirstIndices.ToArray(); // 필터를 통과한 삼각형
+        _cumulativeWeights = cumulativeWeights.ToArray(); // 그삼각형의 가중치
         _totalWeight = totalWeight;
     }
 
@@ -69,35 +78,36 @@ public class NavMeshRandomPointSampler
     /// </summary>
     public bool TryGetRandomPoint(out Vector3 point)
     {
-        if (_totalWeight <= 0f)
+        if (_totalWeight <= 0f) // 하나도 필터를 통과하지 못했을 때
         {
             point = default;
             return false;
         }
 
         float target = Random.value * _totalWeight;
-        int index = System.Array.BinarySearch(_cumulativeWeights, target);
-        if (index < 0)
+        int index = System.Array.BinarySearch(_cumulativeWeights, target); // 타겟과 같은 값이 있으면 그위치를 반환 없으면 음수 반환
+        if (index < 0) // 음수는 target 보다 처음으로 큰 원소위치 위치를 비트 반전한 값 
         {
             index = ~index;
         }
 
         index = Mathf.Min(index, _cumulativeWeights.Length - 1);
 
-        int first = _triangleFirstIndices[index];
+        int first = _triangleFirstIndices[index]; // 꼭짓점 꺼내기
         Vector3 a = _vertices[_indices[first]];
         Vector3 b = _vertices[_indices[first + 1]];
         Vector3 c = _vertices[_indices[first + 2]];
 
+        //  u + v <= 1 이어야 삼각형 1보다 크면 평행사변형을 기준으로 뒤집힌 삼각형
         float u = Random.value;
         float v = Random.value;
-        if (u + v > 1f)
+        if (u + v > 1f) //다시 뒤집어줌
         {
             u = 1f - u;
             v = 1f - v;
         }
 
-        Vector3 candidate = a + (b - a) * u + (c - a) * v;
+        Vector3 candidate = a + (b - a) * u + (c - a) * v; // ab 방향으로 u 만큼 ac 방향으로 v 만큼 세 꼭짓점 표현식
         return SnapToNavMesh(candidate, out point);
     }
 
@@ -107,8 +117,8 @@ public class NavMeshRandomPointSampler
     public bool TryGetPointAround(Vector3 center, float minDistance, float maxDistance, out Vector3 point)
     {
         float distance = Random.Range(minDistance, maxDistance);
-        float angle = Random.Range(0f, Mathf.PI * 2f);
-        Vector3 candidate = center + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * distance;
+        float angle = Random.Range(0f, Mathf.PI * 2f); // 0~360도 사이 
+        Vector3 candidate = center + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * distance; // 그 각도를 가리키는 길이 1방향 벡터3 (x,y,z) * 길이 
         return SnapToNavMesh(candidate, out point);
     }
 
@@ -117,15 +127,16 @@ public class NavMeshRandomPointSampler
     /// </summary>
     private bool SnapToNavMesh(Vector3 candidate, out Vector3 point)
     {
-        if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, _spawnData.NavMeshSnapDistance, _filter)
+        // candidate 주변안에서 필터조건이 맞는 가장 가까운 NavMesh 지점 찾으면  true
+        if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, _spawnData.NavMeshSnapDistance, _filter) 
             && IsHeightAllowed(hit.position.y))
         {
-            point = hit.position;
+            point = hit.position; // out으로 값 반환
             return true;
         }
 
         point = default;
-        return false;
+        return false; //실패
     }
 
     /// <summary>

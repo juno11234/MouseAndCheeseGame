@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14f5b83fb571e9a4ab1c1e3c2ae31010, type: 3}
+  m_Name: ObjectSpawnData
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectSpawnData
+  _spawnInterval: 1
+  _appleSpawnWeight: 9
+  _cheeseSpawnWeight: 1
+  _trapSpawnWeight: 2
+  _initialSpawnAttempts: 5
+  _maxActiveApples: 20
+  _maxActiveCheeses: 2
+  _maxActiveTraps: 6
+  _minObjectDistance: 4
+  _minDistanceFromPlayer: 6
+  _cheeseLifetime: 30
+  _trapMinDistanceFromCheese: 1.5
+  _trapMaxDistanceFromCheese: 3
+  _elevatedHeight: 9
+  _elevatedWeightMultiplier: 3
+  _restrictHeight: 1
+  _restrictedMinHeight: 14
+  _restrictedMaxHeight: 18
+  _spawnHeightOffset: 0.08
+  _maxPlacementAttempts: 10
+  _navMeshSnapDistance: 0.5
