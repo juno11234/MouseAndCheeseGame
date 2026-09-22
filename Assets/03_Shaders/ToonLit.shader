@@ -27,29 +27,32 @@ Shader "Custom/ToonLit"
         {
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
-            Cull Back
+            Cull Back // 삼각형 앞면만 그려라 (기본값)
 
             HLSLPROGRAM
             #pragma vertex ToonVertex
             #pragma fragment ToonFragment
 
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_SCREEN
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            // multi_compile A B 두형식을 모두 컴파일 _는 안켜진 상태, GPU가 알아서 상황에 맞게 골라씀
+            // 쓰지 않는 그림자 연산비용 아낌, URP 에서 그림자 관련설정에 맞춰 사용
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS // 메인 라이트가 그림자를 드리우는지
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE // 카메라 거리에 따라 그림자 해상도 사용여부
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_SCREEN // 그림자를 화면공간에서 한번 더 처리
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT // 그림자 경계를 부드럽게할지, fragment를 붙여 픽셀 단계에서만 
 
             #include "ToonLitInput.hlsl"
             #include "ToonLitForwardPass.hlsl"
             ENDHLSL
         }
 
+        // 다른 오브젝트에 그림자를 드리우기 위한 패스
         Pass
         {
             Name "ShadowCaster"
             Tags { "LightMode" = "ShadowCaster" }
             Cull Back
-            ZWrite On
-            ZTest LEqual
+            ZWrite On // 지금 그리는 픽셀의 깊이값을 기록할지
+            ZTest LEqual // 픽셀을 그릴지 말지 깊이 버퍼와 비교후 판단
 
             HLSLPROGRAM
             #pragma vertex ToonShadowVertex
@@ -59,7 +62,8 @@ Shader "Custom/ToonLit"
             #include "ToonShadowCasterPass.hlsl"
             ENDHLSL
         }
-
+        
+        // 포스트 프로세싱 or 불투명 텍스처 샘플링에 사용
         Pass
         {
             Name "DepthOnly"
@@ -76,7 +80,7 @@ Shader "Custom/ToonLit"
             ENDHLSL
         }
 
-        // PC_Renderer의 SSAO Renderer Feature가 참조하는 노멀 버퍼 생성용 Pass
+        // PC_Renderer의 SSAO Renderer Feature가 참조하는 노멀 방향 버퍼 생성용 Pass
         Pass
         {
             Name "DepthNormals"

@@ -9922,6 +9922,10 @@ PrefabInstance:
       propertyPath: _catTransform
       value: 
       objectReference: {fileID: 387844576}
+    - target: {fileID: 7142827269578415356, guid: 4aefca91fccc47144b4fc39746abb70b, type: 3}
+      propertyPath: _rotationSpeed
+      value: 120
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
