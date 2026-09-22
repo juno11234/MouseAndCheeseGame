@@ -46,9 +46,11 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           unityVersion: 6000.3.19f1
           targetPlatform: ${{ matrix.targetPlatform }}
+          cliVersion: v0.1.69
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
