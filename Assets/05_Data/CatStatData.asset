@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CatStatData
   _moveSpeed: 6
   _waypointArrivalTolerance: 1
-  _directChaseDistance: 7
+  _directChaseDistance: 8.5
   _maxGap: 15
   _rubberBandSpeed: 8
   _gapCorrectionSpeed: 15
