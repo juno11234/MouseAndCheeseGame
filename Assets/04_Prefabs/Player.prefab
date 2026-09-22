@@ -833,6 +833,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3452947867355924570}
   - component: {fileID: 7142827269578415356}
+  - component: {fileID: 4114172204405567403}
   m_Layer: 0
   m_Name: CameraPivot
   m_TagString: Untagged
@@ -881,6 +882,23 @@ MonoBehaviour:
   _minDistance: 0.5
   _cameraSmoothSpeed: 15
   _snapSpeed: 20
+--- !u!114 &4114172204405567403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4419555467272582880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 938bb96b3c727d63536070d3163a41ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpeedEffectController
+  _hungerController: {fileID: 3342152278285907321}
+  _playerStatData: {fileID: 11400000, guid: b1fe1592fe483044bbe53c674dad2db5, type: 2}
+  _speedEffectData: {fileID: 11400000, guid: 830a8a11e62b61e5c819a8eb32d9b45d, type: 2}
+  _camera: {fileID: 3638796803869149872}
+  _radialBlurMaterial: {fileID: 2100000, guid: 0292008814edc5cb2779864175b7ce11, type: 2}
 --- !u!1 &4483624951237011610
 GameObject:
   m_ObjectHideFlags: 0
