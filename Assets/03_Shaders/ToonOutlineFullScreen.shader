@@ -23,9 +23,8 @@ Shader "Custom/ToonOutlineFullScreen"
             #pragma fragment ToonOutlineFullScreenFragment
 
             // Core.hlsl을 먼저 include해 XR 관련 텍스처 매크로(TEXTURE2D_X 등)를 정의한 뒤 Blit.hlsl을 include해야 한다
-            // (URP Core Blit.shader의 "Core.hlsl for XR dependencies" 주석과 동일한 이유로 순서 고정)
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            // Vert()/Varyings/_BlitTexture는 URP 코어의 Blit.hlsl이 제공 (5-1절 근거)
+            // Vert()/Varyings/_BlitTexture는 URP 코어의 Blit.hlsl이 제공
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareNormalsTexture.hlsl"
@@ -39,7 +38,8 @@ Shader "Custom/ToonOutlineFullScreen"
             half4 ToonOutlineFullScreenFragment(Varyings input) : SV_Target
             {
                 float2 uv = input.texcoord;
-                half4 sceneColor = SAMPLE_TEXTURE2D_X_LOD(_BlitTexture, sampler_PointClamp, uv, 0);
+                // _X는 XR 대응 _LOD 는 밉맵 레벨 지정(텍스터 해상도)
+                half4 sceneColor = SAMPLE_TEXTURE2D_X_LOD(_BlitTexture, sampler_PointClamp, uv, 0); 
 
                 // 인접 픽셀 오프셋 (화면 해상도 기준 1텍셀)
                 float2 texel = _BlitTexture_TexelSize.xy;
