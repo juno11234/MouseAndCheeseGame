@@ -9,7 +9,8 @@ public class TitleUI : MonoBehaviour
     [SerializeField] private string _ingameSceneName = "02_Ingame";
 
     /// <summary>
-    /// 인게임 씬을 로드해 게임을 시작한다. Start_Button의 onClick에 연결한다
+    /// 인게임 씬을 로드해 게임을 시작한다. 조작 준비 카운트다운은 인게임 씬의 GameStartCountdown이 담당한다.
+    /// Start_Button의 onClick에 연결한다
     /// </summary>
     public void StartGame()
     {
