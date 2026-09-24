@@ -203,8 +203,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1488794515}
-        m_TargetAssemblyTypeName: '"TitleUI, Assembly-CSharp"'
-        m_MethodName: '"StartGame"'
+        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
+        m_MethodName: StartGame
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -706,8 +706,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1488794515}
-        m_TargetAssemblyTypeName: '"TitleUI, Assembly-CSharp"'
-        m_MethodName: '"QuitGame"'
+        m_TargetAssemblyTypeName: TitleUI, Assembly-CSharp
+        m_MethodName: QuitGame
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
