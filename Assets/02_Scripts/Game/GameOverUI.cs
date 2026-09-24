@@ -15,6 +15,7 @@ public class GameOverUI : MonoBehaviour
     private void Start()
     {
         Cursor.visible = false;
+        _gameOverPanel.SetActive(false);
     }
 
     /// <summary>
