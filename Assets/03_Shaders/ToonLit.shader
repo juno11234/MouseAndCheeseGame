@@ -20,13 +20,19 @@ Shader "Custom/ToonLit"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" "Queue" = "Geometry" }
+        Tags
+        {
+            "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" "Queue" = "Geometry"
+        }
 
         // 캐릭터 본체를 그리는 메인 라이팅 Pass
         Pass
         {
             Name "ForwardLit"
-            Tags { "LightMode" = "UniversalForward" }
+            Tags
+            {
+                "LightMode" = "UniversalForward"
+            }
             Cull Back // 삼각형 앞면만 그려라 (기본값)
 
             HLSLPROGRAM
@@ -38,7 +44,10 @@ Shader "Custom/ToonLit"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS // 메인 라이트가 그림자를 드리우는지
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE // 카메라 거리에 따라 그림자 해상도 사용여부
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_SCREEN // 그림자를 화면공간에서 한번 더 처리
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT // 그림자 경계를 부드럽게할지, fragment를 붙여 픽셀 단계에서만 
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT // 그림자 경계를 부드럽게할지, fragment를 붙여 픽셀 단계에서만
+            #pragma multi_compile _ LIGHTMAP_ON
+            #pragma multi_compile _ LIGHTMAP_SHADOW_MIXING
+            #pragma multi_compile _ SHADOWS_SHADOWMASK
 
             #include "ToonLitInput.hlsl"
             #include "ToonLitForwardPass.hlsl"
@@ -49,7 +58,10 @@ Shader "Custom/ToonLit"
         Pass
         {
             Name "ShadowCaster"
-            Tags { "LightMode" = "ShadowCaster" }
+            Tags
+            {
+                "LightMode" = "ShadowCaster"
+            }
             Cull Back
             ZWrite On // 지금 그리는 픽셀의 깊이값을 기록할지
             ZTest LEqual // 픽셀을 그릴지 말지 깊이 버퍼와 비교후 판단
@@ -62,12 +74,15 @@ Shader "Custom/ToonLit"
             #include "ToonShadowCasterPass.hlsl"
             ENDHLSL
         }
-        
+
         // 포스트 프로세싱 or 불투명 텍스처 샘플링에 사용
         Pass
         {
             Name "DepthOnly"
-            Tags { "LightMode" = "DepthOnly" }
+            Tags
+            {
+                "LightMode" = "DepthOnly"
+            }
             ColorMask 0
             ZWrite On
 
@@ -84,7 +99,10 @@ Shader "Custom/ToonLit"
         Pass
         {
             Name "DepthNormals"
-            Tags { "LightMode" = "DepthNormals" }
+            Tags
+            {
+                "LightMode" = "DepthNormals"
+            }
             ZWrite On
 
             HLSLPROGRAM

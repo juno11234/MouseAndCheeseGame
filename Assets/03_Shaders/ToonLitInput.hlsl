@@ -27,8 +27,9 @@ CBUFFER_END
 struct Attributes
 {
     float4 positionOS : POSITION;
-    float3 normalOS   : NORMAL;
-    float2 uv         : TEXCOORD0;
+    float3 normalOS : NORMAL;
+    float2 uv : TEXCOORD0;
+    float2 staticLightmap : TEXCOORD1; // 그림자 굽기용
 };
 
 // ForwardLit Pass의 보간 출력
@@ -36,10 +37,11 @@ struct Attributes
 struct Varyings
 {
     float4 positionHCS : SV_POSITION;
-    float2 uv          : TEXCOORD0;
-    float3 normalWS    : TEXCOORD1;
-    float3 positionWS  : TEXCOORD2;
-    float4 shadowCoord  : TEXCOORD3;
+    float2 uv : TEXCOORD0;
+    float3 normalWS : TEXCOORD1;
+    float3 positionWS : TEXCOORD2;
+    float4 shadowCoord : TEXCOORD3;
+    DECLARE_LIGHTMAP_OR_SH(staticLightmap, vertexSH, 4); //오브젝트가 라이트맵 적용 대상이면 스태틱 아니면 라이트 프로브값
 };
 
 #endif
