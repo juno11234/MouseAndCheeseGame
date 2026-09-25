@@ -25,7 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _BlurIntensity: 0.29900095
+    - _BlurIntensity: 6.015211e-13
     - _InnerRadius: 0.35
     - _OuterRadius: 0.75
     m_Colors: []
