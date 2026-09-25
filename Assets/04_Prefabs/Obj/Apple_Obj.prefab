@@ -133,6 +133,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2663728868154720380, guid: ffd97f6230d94464fa7ecaac15265a8f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7705218213584353360, guid: ffd97f6230d94464fa7ecaac15265a8f, type: 3}
       propertyPath: m_Name
       value: Apple

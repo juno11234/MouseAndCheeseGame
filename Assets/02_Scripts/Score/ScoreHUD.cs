@@ -13,11 +13,14 @@ public class ScoreHUD : MonoBehaviour
     private int _displayedScore = -1;
 
     /// <summary>
-    /// TMP 텍스트 컴포넌트를 가져온다
+    /// TMP 텍스트 컴포넌트를 가져오고, 충분히 긴 문자열로 내부 배열을 미리 할당한다.
+    /// TMP는 한 번 늘어난 내부 배열을 줄이지 않으므로, 이후 자릿수가 늘어날 때마다 배열을 다시
+    /// 할당하며 GC가 발생하는 것을 막을 수 있다
     /// </summary>
     private void Awake()
     {
         _text = GetComponent<TMP_Text>();
+        _text.text = "Score : 9999999";
     }
 
     /// <summary>
