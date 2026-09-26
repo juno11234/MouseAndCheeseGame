@@ -11,13 +11,10 @@ public class GameStartCountdown : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _countdownText;
 
     /// <summary>
-    /// 씬 시작과 동시에 게임을 정지시키고 카운트다운을 시작한다.
-    /// 카운트다운 문자열은 한 자리 숫자뿐이라 TMP 내부 배열 재할당(GC)이 애초에 거의 없지만,
-    /// 다른 TMP 텍스트들과 일관되게 미리 채워둔다
+    /// 씬 시작과 동시에 게임을 정지시키고 카운트다운을 시작한다
     /// </summary>
     private void Start()
     {
-        _countdownText.text = "9";
         Time.timeScale = 0f;
         StartCoroutine(Countdown());
     }

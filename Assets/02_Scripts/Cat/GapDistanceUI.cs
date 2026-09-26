@@ -13,14 +13,22 @@ public class GapDistanceUI : MonoBehaviour
     private int _displayedDistance = -1;
 
     /// <summary>
-    /// 같은 오브젝트의 TMP 텍스트를 가져오고, 충분히 긴 문자열로 내부 배열을 미리 할당한다.
-    /// TMP는 한 번 늘어난 내부 배열을 줄이지 않으므로, 이후 자릿수가 늘어날 때마다 배열을 다시
-    /// 할당하며 GC가 발생하는 것을 막을 수 있다
+    /// 같은 오브젝트의 TMP 텍스트를 가져온다
     /// </summary>
     private void Awake()
     {
         _text = GetComponent<TMP_Text>();
+    }
+
+    /// <summary>
+    /// 충분히 긴 문자열로 TMP 내부 배열을 미리 확보한다
+    /// </summary>
+    private void Start()
+    {
+        // TMP는 .text를 넣는 순간이 아니라 프레임 끝 캔버스 갱신 때 파싱하므로, 첫 Update에서 덮이기 전에 즉시 파싱시킨다.
+        // TMP 자신의 Awake가 끝나야 동작하므로 Awake가 아닌 Start에서 호출한다
         _text.text = "9999999";
+        _text.ForceMeshUpdate();
     }
 
     /// <summary>
